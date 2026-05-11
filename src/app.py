@@ -1,18 +1,35 @@
 """
 High School Management System API
 
-A super simple FastAPI application that allows students to view and sign up
+A FastAPI application that allows students to view and sign up
 for extracurricular activities at Mergington High School.
+Now includes user authentication and JWT-based access control.
 """
 
 from fastapi import FastAPI, HTTPException
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import RedirectResponse
+from fastapi.middleware.cors import CORSMiddleware
 import os
 from pathlib import Path
+from endpoints import router as auth_router
 
-app = FastAPI(title="Mergington High School API",
-              description="API for viewing and signing up for extracurricular activities")
+app = FastAPI(
+    title="Mergington High School API",
+    description="API for viewing and signing up for extracurricular activities with user authentication"
+)
+
+# Add CORS middleware
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+# Include authentication routes
+app.include_router(auth_router)
 
 # Mount the static files directory
 current_dir = Path(__file__).parent
